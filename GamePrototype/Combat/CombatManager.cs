@@ -72,6 +72,16 @@ namespace GamePrototype.Combat
 
         private void ApplyDamage(Unit attacker, Unit defender)
         {
+            if (attacker is Player player)
+            {
+                var weapon = player.GetEquippedWeapon();
+                if (weapon != null)
+                {
+                    weapon.ReduceDurability(1);
+                    Console.WriteLine($"The weapon durability has decreased by 1. Remaining: {weapon.Durability}");
+                }
+            }
+
             defender.ApplyDamage(attacker.GetUnitDamage());
             Console.WriteLine($"{attacker.Name} hits {defender.Name}. {defender.Name} health {defender.Health}/{defender.MaxHealth}");
             if (defender.Health == 0) 

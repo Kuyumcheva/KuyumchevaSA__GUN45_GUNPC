@@ -13,6 +13,11 @@ namespace GamePrototype.Units
         {            
         }
 
+        public EquipItem GetEquippedWeapon()
+        {
+            return _equipment.TryGetValue(EquipSlot.Weapon, out var weapon) ? weapon : null;
+        }
+
         public override uint GetUnitDamage()
         {
             if (_equipment.TryGetValue(EquipSlot.Weapon, out var item) && item is Weapon weapon) 
