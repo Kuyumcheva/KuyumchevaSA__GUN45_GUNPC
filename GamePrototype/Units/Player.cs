@@ -56,6 +56,22 @@ namespace GamePrototype.Units
             {
                 Health += healthPotion.HealthRestore;
             }
+            else if (economicItem is Grindstone grindstone)
+            {
+                UseGrindstone(grindstone);
+            }
+        }
+
+        private void UseGrindstone(Grindstone grindstone)
+        {
+            foreach (var item in _equipment.Values)
+            {
+                if (item is EquipItem equipItem)
+                {
+                    equipItem.Repair(grindstone.GrindstoneRepair);
+                    Console.WriteLine($"Restored {grindstone.GrindstoneRepair} durability to {item.Name} (current: {equipItem.Durability})");
+                }
+            }
         }
 
         protected override uint CalculateAppliedDamage(uint damage)
