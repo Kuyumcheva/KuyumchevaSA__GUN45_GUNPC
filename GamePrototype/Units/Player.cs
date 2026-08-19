@@ -58,6 +58,8 @@ namespace GamePrototype.Units
             if (_equipment.TryGetValue(EquipSlot.Armour, out var item) && item is Armour armour) 
             {
                 damage -= (uint)(damage * (armour.Defence / 100f));
+                armour.ReduceDurability(1);
+                Console.WriteLine($"The armor durability has decreased by 1. Remaining: {armour.Durability}");
             }
             return damage;
         }
