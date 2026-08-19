@@ -4,7 +4,7 @@ using GamePrototype.Items.EquipItems;
 
 namespace GamePrototype.Utils
 {
-    public static class DungeonBuilder
+    /*public static class DungeonBuilder
     {
         public static DungeonRoom BuildDungeon()
         {
@@ -30,5 +30,5 @@ namespace GamePrototype.Utils
 
             return enter;
         }
-    }
+    }*/
 }

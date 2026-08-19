@@ -4,7 +4,7 @@ using GamePrototype.Units;
 
 namespace GamePrototype.Utils
 {
-    public class UnitFactoryDemo
+   /*public class UnitFactoryDemo
     {
         public static Unit CreatePlayer(string name)
         {
@@ -16,5 +16,5 @@ namespace GamePrototype.Utils
         }
 
         public static Unit CreateGoblinEnemy() => new Goblin(GameConstants.Goblin, 18, 18, 2);
-    }
+    }*/
 }
