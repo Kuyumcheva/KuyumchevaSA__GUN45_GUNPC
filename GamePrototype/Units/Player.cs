@@ -15,14 +15,26 @@ namespace GamePrototype.Units
 
         public EquipItem GetEquippedWeapon()
         {
-            return _equipment.TryGetValue(EquipSlot.Weapon, out var weapon) ? weapon : null;
+            if (_equipment.TryGetValue(EquipSlot.Weapon, out var weapon))
+            {
+                return weapon;
+            }
+            else if (_equipment.TryGetValue(EquipSlot.RangeWeapon, out var rangeWeapon))
+            {
+                return rangeWeapon;
+            }
+            return null;
         }
 
         public override uint GetUnitDamage()
         {
-            if (_equipment.TryGetValue(EquipSlot.Weapon, out var item) && item is Weapon weapon) 
+            if (_equipment.TryGetValue(EquipSlot.Weapon, out var item) && item is Weapon weapon)
             {
                 return BaseDamage + weapon.Damage;
+            }
+            else if (_equipment.TryGetValue(EquipSlot.RangeWeapon, out var rangeItem) && rangeItem is RangeWeapon rangeWeapon)
+            {
+                return BaseDamage + rangeWeapon.Damage;
             }
             return BaseDamage;
         }
@@ -42,12 +54,32 @@ namespace GamePrototype.Units
 
         public override void AddItemToInventory(Item item)
         {
-            if (item is EquipItem equipItem && _equipment.TryAdd(equipItem.Slot, equipItem)) 
+            if (item is EquipItem equipItem)
             {
-                // Item was equipped
-                return;
+                if (_equipment.ContainsKey(equipItem.Slot))
+                {
+                    Console.WriteLine($"You have found a new {equipItem.Name}. Do you want to change your current {_equipment[equipItem.Slot].Name}? (Y/N)");
+                    if (Console.ReadLine().ToLower() == "y")
+                    {
+                        var oldItem = _equipment[equipItem.Slot];
+                        _equipment[equipItem.Slot] = equipItem;
+                        Console.WriteLine($"The equipment was successfully replaced {oldItem.Name} -> {equipItem.Name}");
+                    }
+                    else
+                    {
+                        base.AddItemToInventory(item);
+                    }
+                }
+                else
+                {
+                    _equipment.Add(equipItem.Slot, equipItem);
+                    Console.WriteLine($" {equipItem.Name} was successfully equiped");
+                }
             }
-            base.AddItemToInventory(item);
+            else
+            {
+                base.AddItemToInventory(item);
+            }
         }
 
         private void UseEconomicItem(EconomicItem economicItem)
@@ -76,12 +108,23 @@ namespace GamePrototype.Units
 
         protected override uint CalculateAppliedDamage(uint damage)
         {
-            if (_equipment.TryGetValue(EquipSlot.Armour, out var item) && item is Armour armour) 
+            uint totalDefence = 0;
+
+            if (_equipment.TryGetValue(EquipSlot.Armour, out var armourItem) && armourItem is Armour armour)
             {
-                damage -= (uint)(damage * (armour.Defence / 100f));
+                totalDefence += armour.Defence;
                 armour.ReduceDurability(1);
                 Console.WriteLine($"The armor durability has decreased by 1. Remaining: {armour.Durability}");
             }
+
+            if (_equipment.TryGetValue(EquipSlot.Helmet, out var helmetItem) && helmetItem is Helmet helmet)
+            {
+                totalDefence += helmet.Defence;
+                helmet.ReduceDurability(1);
+                Console.WriteLine($"The helmet durability has decreased by 1. Remaining: {helmet.Durability}");
+            }
+
+            damage -= (uint)(damage * (totalDefence / 100f));
             return damage;
         }
 

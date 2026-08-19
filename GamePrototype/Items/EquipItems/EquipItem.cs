@@ -20,9 +20,6 @@ namespace GamePrototype.Items.EquipItems
 
         public void ReduceDurability(uint delta) => _durability = Math.Max(_durability - delta, 0);
 
-        public void Repair(uint delta) => 
-            _durability += _durability + delta > _maxDurability 
-            ? _maxDurability 
-            : _durability + delta;
+        public void Repair(uint delta) => _durability = Math.Min(_durability + delta, _maxDurability);
     }
 }
