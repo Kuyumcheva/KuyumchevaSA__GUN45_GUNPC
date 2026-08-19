@@ -10,10 +10,40 @@ namespace GamePrototype.Game
         private Unit _player;
         private DungeonRoom _dungeon;
         private readonly CombatManager _combatManager = new CombatManager();
-        
-        public void StartGame() 
+        private UnitFactory _unitFactory;
+        private DungeonBuilderBase _dungeonBuilder;
+        private DifficultyLevel _difficulty;
+
+        public void StartGame()
         {
+            Console.WriteLine("Choose difficulty level:");
+            Console.WriteLine("1 - Easy");
+            Console.WriteLine("2 - Hard");
+
+            var input = Console.ReadLine();
+
+            switch (input)
+            {
+                case "1":
+                    _difficulty = DifficultyLevel.Easy;
+                    _unitFactory = new EasyLVLUnitFactory();
+                    _dungeonBuilder = new EasyLVLDungeonBuilder();
+                    break;
+                case "2":
+                    _difficulty = DifficultyLevel.Hard;
+                    _unitFactory = new HardLVLUnitFactory();
+                    _dungeonBuilder = new HardLVLDungeonBuilder();
+                    break;
+                default:
+                    Console.WriteLine("Incorrect choice; the default difficulty (Easy) is set.");
+                    _difficulty = DifficultyLevel.Easy;
+                    _unitFactory = new EasyLVLUnitFactory();
+                    _dungeonBuilder = new EasyLVLDungeonBuilder();
+                    break;
+            }
+
             Initialize();
+            Console.WriteLine($"The chosen level of difficulty is {_difficulty}");
             Console.WriteLine("Entering the dungeon");
             StartGameLoop();
         }
@@ -23,9 +53,9 @@ namespace GamePrototype.Game
         private void Initialize()
         {
             Console.WriteLine("Welcome, player!");
-            _dungeon = DungeonBuilder.BuildDungeon();
+            _dungeon = _dungeonBuilder.BuildDungeon();
             Console.WriteLine("Enter your name");
-            _player = UnitFactoryDemo.CreatePlayer(Console.ReadLine());
+            _player = _unitFactory.CreatePlayer(Console.ReadLine());
             Console.WriteLine($"Hello {_player.Name}");
         }
 
